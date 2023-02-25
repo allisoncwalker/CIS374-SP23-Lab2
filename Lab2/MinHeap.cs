@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection;
 
 namespace Lab2
 {
@@ -45,7 +46,6 @@ namespace Lab2
             return array[0];
         }
 
-        // TODO
         /// <summary>
         /// Adds given item to the heap.
         /// Time complexity: O(?).
@@ -70,21 +70,36 @@ namespace Lab2
 
         public T Extract()
         {
-            return ExtractMin();
+     
+                return ExtractMin();
         }
 
-        // TODO
         /// <summary>
         /// Removes and returns the max item in the min-heap.
         /// Time complexity: O( N ).
         /// </summary>
         public T ExtractMax()
         {
-            // linear search
+            if (IsEmpty)
+            {
+                throw new Exception("Empty Heap");
+            }
+
+            T max = array[0];
+
+            // swap root (first) and last element
+            Swap(0, Count - 1);
+
+            // "remove" last
+            Count--;
+
+            // trickle down from root (first)
+            TrickleDown(0);
+
+            return max;
 
         }
 
-        // TODO
         /// <summary>
         /// Removes and returns the min item in the min-heap.
         /// Time ctexity: O( log(n) ).
@@ -110,7 +125,6 @@ namespace Lab2
             return min;
         }
 
-        // TODO
         /// <summary>
         /// Returns true if the heap contains the given value; otherwise false.
         /// Time complexity: O( N ).
@@ -131,11 +145,21 @@ namespace Lab2
 
         }
 
-        // TODO
         // Time Complexity: O( log(n) )
         private void TrickleUp(int index)
         {
-
+            int parentIndex, temp;
+            if (index != 0)
+            {
+                parentIndex = Parent(index);
+                if (parentIndex > index)
+                {
+                    temp = parentIndex;
+                    parentIndex = index;
+                    index = temp;
+                    TrickleUp(0);
+                }
+            }
 
         }
 
@@ -143,32 +167,67 @@ namespace Lab2
         // Time Complexity: O( log(n) )
         private void TrickleDown(int index)
         {
+            //int LeftChildIndex = int LeftChild;
+            //int RightChildIndex = int RightChild;
+
+            //if (RightChildIndex >= Count)
+            //{
+            //    if (LeftChildIndex >= Count)
+            //    {
+            //        return;
+            //    }
+            //    else
+            //    {
+            //        Mindex = LeftChildIndex;
+            //    }
+            //}
+            //else
+            //{
+            //    if (LeftChildIndex <= RightChildIndex)
+            //    {
+            //        Mindex = LeftChildIndex;
+            //    }
+            //    else
+            //    {
+            //        Mindex = LeftChildIndex;
+            //    }
+            //}
+            //if (index > Mindex)
+            //{
+            //    tmp = Mindex;
+            //    Mindex = index;
+            //    index = tmp;
+            //    TrickleDown(Mindex);
+            //}
 
         }
 
-        // TODO
         /// <summary>
         /// Gives the position of a node's parent, the node's position in the heap.
         /// </summary>
         private static int Parent(int position)
         {
+            int parentPos = (position -1) / 2;
 
+            return parentPos;
         }
 
-        // TODO
         /// <summary>
         /// Returns the position of a node's left child, given the node's position.
         /// </summary>
         private static int LeftChild(int position)
         {
+            int left = 2 * position + 2;
+            return left;
         }
 
-        // TODO
         /// <summary>
         /// Returns the position of a node's right child, given the node's position.
         /// </summary>
         private static int RightChild(int position)
         {
+            int right = 2 * position + 2 ;
+            return right;
         }
 
         private void Swap(int index1, int index2)
