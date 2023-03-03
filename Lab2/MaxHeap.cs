@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Security.Cryptography;
 
 namespace Lab2
 {
@@ -28,6 +30,7 @@ namespace Lab2
             }
         }
 
+        //Finished
         /// <summary>
         /// Returns the min item but does NOT remove it.
         /// Time complexity: O(1).
@@ -42,6 +45,7 @@ namespace Lab2
             return array[0];
         }
 
+        //Finished
         /// <summary>
         /// Adds given item to the heap.
         /// Time complexity: O(?).
@@ -94,6 +98,7 @@ namespace Lab2
             return max;
         }
 
+
         /// <summary>
         /// Removes and returns the min item in the max-heap.
         /// Time complexity: O(?).
@@ -105,26 +110,27 @@ namespace Lab2
                 throw new Exception("Empty Heap");
             }
 
-            int minIndex = (Count - 1) / 2 + 1;
-            T min = array[minIndex];
-            for (int i = minIndex + 1; i < Count; i++)
+            int mIndex = (Count - 1) / 2 + 1;
+            T min = array[mIndex];
+            for (int i = mIndex + 1; i < Count; i++)
             {
                 if (array[i].CompareTo(min) < 0)
                 {
                     min = array[i];
-                    minIndex = i;
+                    mIndex = i;
                 }
             }
 
-            Swap(minIndex, Count - 1);
+            Swap(mIndex, Count - 1);
 
             Count--;
 
-            TrickleUp(minIndex);
+            TrickleUp(mIndex);
 
             return min;
         }
 
+        //Finished
         /// <summary>
         /// Returns true if the heap contains the given value; otherwise false.
         /// Time complexity: O(N).
@@ -144,19 +150,148 @@ namespace Lab2
             return false;
 
         }
+        // TODO
+        /// <summary>
+        /// Updates the first element with the given value from the heap.
+        /// Time complexity: O( ? )
+        /// </summary>
+        public void Update(T oldValue, T newValue)
+        {
+            if (IsEmpty)
+            {
+                throw new Exception("Empty Heap");
+            }
+
+            if (Contains(oldValue))
+            {
+                //int index = (Count - 1) / 2 + 1;
+                int index = 0;
+                //T min = array[index];
+                for (int i = index + 1; i < Count; i++)
+                {
+                    if (array[i].CompareTo(oldValue) == 0)
+                    {
+                        newValue = array[i];
+                        index = i;
+                    }
+                }
+
+
+
+                //Swap(index, Count - 1);
+                //Count--;
+                TrickleUp(index);
+                //return min;
+            }
+            else
+            {
+                throw new Exception("N/A");
+            }
+
+        }
 
         // TODO
+        /// <summary>
+        /// Removes the first element with the given value from the heap.
+        /// Time complexity: O( ? )
+        /// </summary>
+        public void Remove(T value)
+        {
+            if (IsEmpty)
+            {
+                throw new Exception("Empty Heap");
+            }
+
+            int index = (Count - 1) / 2 + 1;
+            //T min = array[mIndex];
+            for (int i = index + 1; i < Count; i++)
+            {
+                if (array[i].CompareTo(value) == 0)
+                {
+                    //min = array[i];
+                    index = i;
+                }
+            }
+
+            Swap(index, Count - 1);
+
+            Count--;
+
+            TrickleUp(0);
+
+            //return MinHeap;
+
+
+
+        }
+
+        // Finished
         private void TrickleUp(int index)
         {
+            if (index != 0)
+            {
+                var parentIndex = Parent(index);
+                if (array[index].CompareTo(array[parentIndex]) > 0)
+                {
+                    Swap(index, parentIndex);
+                    TrickleUp(parentIndex);
 
+                }
+            }
+            else
+            {
+                return;
+            }
         }
 
-        // TODO
+        // Finished
         private void TrickleDown(int index)
         {
+            if (index == 0)
+            {
+                return;
+            }
+
+            if (index != 0)
+            {
+                int chIndex = 2 * index + 1;
+                int value = index;
+
+                while (chIndex.CompareTo(Capacity) == 0)
+                {
+                    int maxValue = value;
+                    int maxIndex = -1;
+                    int i = 0;
+                    while ( i < maxValue)
+                    {
+                        if (i < 2 && i + chIndex < array.Length)
+                        {
+                            if (i + chIndex.CompareTo(maxValue) == 0)
+                            {
+                                maxValue = i + chIndex;
+                                maxIndex = i + chIndex;
+                            }
+                            i++;
+                        }
+                    }
+
+                    if (maxValue == value)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Swap(index, maxIndex);
+                        index = maxIndex;
+                        chIndex = 2 * index + 1;
+                    }
+                }
+                   
+            }
 
         }
 
+        //Finished
         /// <summary>
         /// Gives the position of a node's parent, the node's position in the heap.
         /// </summary>
@@ -167,6 +302,7 @@ namespace Lab2
             return parentPos;
         }
 
+        //Finished
         /// <summary>
         /// Returns the position of a node's left child, given the node's position.
         /// </summary>
@@ -177,6 +313,7 @@ namespace Lab2
             return left;
         }
 
+        //Finished
         /// <summary>
         /// Returns the position of a node's right child, given the node's position.
         /// </summary>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Lab2
 {
@@ -32,6 +33,7 @@ namespace Lab2
 
         }
 
+        //Finished
         /// <summary>
         /// Returns the min item but does NOT remove it.
         /// Time complexity: O(?).
@@ -46,6 +48,7 @@ namespace Lab2
             return array[0];
         }
 
+        //Finished
         /// <summary>
         /// Adds given item to the heap.
         /// Time complexity: O(?).
@@ -93,12 +96,10 @@ namespace Lab2
             // "remove" last
             Count--;
 
-            // trickle down from root (first)
-            TrickleDown(0);
-
             return max;
 
         }
+
 
         /// <summary>
         /// Removes and returns the min item in the min-heap.
@@ -125,6 +126,7 @@ namespace Lab2
             return min;
         }
 
+        //Finished
         /// <summary>
         /// Returns true if the heap contains the given value; otherwise false.
         /// Time complexity: O( N ).
@@ -144,64 +146,148 @@ namespace Lab2
             return false;
 
         }
-
-        // Time Complexity: O( log(n) )
-        private void TrickleUp(int index)
+        // TODO
+        /// <summary>
+        /// Updates the first element with the given value from the heap.
+        /// Time complexity: O( ? )
+        /// </summary>
+        public void Update(T oldValue, T newValue)
         {
-            int parentIndex, temp;
-            if (index != 0)
+            if (IsEmpty)
             {
-                parentIndex = Parent(index);
-                if (parentIndex > index)
+                throw new Exception("Empty Heap");
+            }
+
+            if (Contains(oldValue))
+            {
+                //int index = (Count - 1) / 2 + 1;
+                int index = 0;
+                //T min = array[index];
+                for (int i = index + 1; i < Count; i++)
                 {
-                    temp = parentIndex;
-                    parentIndex = index;
-                    index = temp;
-                    TrickleUp(0);
+                    if (array[i].CompareTo(oldValue) == 0)
+                    {
+                        newValue = array[i];
+                        index = i;
+                    }
                 }
+
+
+
+                //Swap(index, Count - 1);
+                //Count--;
+                TrickleUp(index);
+                //return min;
+            }
+            else
+            {
+                throw new Exception("N/A");
             }
 
         }
 
         // TODO
+        /// <summary>
+        /// Removes the first element with the given value from the heap.
+        /// Time complexity: O( ? )
+        /// </summary>
+        public void Remove(T value)
+        {
+            if (IsEmpty)
+            {
+                throw new Exception("Empty Heap");
+            }
+
+            int index = (Count - 1) / 2 + 1;
+            //T min = array[mIndex];
+            for (int i = index + 1; i < Count; i++)
+            {
+                if (array[i].CompareTo(value) == 0)
+                {
+                    //min = array[i];
+                    index = i;
+                }
+            }
+
+            Swap(index, Count - 1);
+
+            Count--;
+
+            TrickleUp(0);
+
+            //return MinHeap;
+
+
+        }
+        //Finished
+        // Time Complexity: O( log(n) )
+        private void TrickleUp(int index)
+        {
+            int parentIndex;
+            if (index != 0)
+            {
+                parentIndex = Parent(index);
+                if (array[index].CompareTo(array[parentIndex]) < 0)
+                {
+                    Swap(index, parentIndex);
+                    TrickleUp(parentIndex);
+
+                }
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        // Finished
         // Time Complexity: O( log(n) )
         private void TrickleDown(int index)
         {
-            //int LeftChildIndex = int LeftChild;
-            //int RightChildIndex = int RightChild;
+            if (index == 0)
+            {
+                return;
+            }
 
-            //if (RightChildIndex >= Count)
-            //{
-            //    if (LeftChildIndex >= Count)
-            //    {
-            //        return;
-            //    }
-            //    else
-            //    {
-            //        Mindex = LeftChildIndex;
-            //    }
-            //}
-            //else
-            //{
-            //    if (LeftChildIndex <= RightChildIndex)
-            //    {
-            //        Mindex = LeftChildIndex;
-            //    }
-            //    else
-            //    {
-            //        Mindex = LeftChildIndex;
-            //    }
-            //}
-            //if (index > Mindex)
-            //{
-            //    tmp = Mindex;
-            //    Mindex = index;
-            //    index = tmp;
-            //    TrickleDown(Mindex);
-            //}
+            if (index != 0)
+            {
+                int chIndex = 2 * index + 1;
+                int value = index;
 
+                while (chIndex.CompareTo(Capacity) == 0)
+                {
+                    int minValue = value;
+                    int minIndex = -1;
+                    int i = 0;
+                    while (i > minValue)
+                    {
+                        if (i < 2 && i + chIndex < array.Length)
+                        {
+                            if (i + chIndex.CompareTo(minValue) == 0)
+                            {
+                                minValue = i + chIndex;
+                                minIndex = i + chIndex;
+                            }
+                            i++;
+                        }
+                    }
+
+                    if (minValue == value)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Swap(index, minIndex);
+                        index = minIndex;
+                        chIndex = 2 * index + 1;
+                    }
+                }
+
+            }
         }
 
+        //Finished
         /// <summary>
         /// Gives the position of a node's parent, the node's position in the heap.
         /// </summary>
@@ -212,15 +298,17 @@ namespace Lab2
             return parentPos;
         }
 
+        //Finished
         /// <summary>
         /// Returns the position of a node's left child, given the node's position.
         /// </summary>
         private static int LeftChild(int position)
         {
-            int left = 2 * position + 2;
+            int left = 2 * position + 1;
             return left;
         }
 
+        //Finished
         /// <summary>
         /// Returns the position of a node's right child, given the node's position.
         /// </summary>
