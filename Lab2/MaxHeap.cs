@@ -166,9 +166,10 @@ namespace Lab2
             {
                 throw new Exception("Not in Heap");
             }
-                //int index = (Count - 1) / 2 + 1;
-                int index = 0;
-                //T min = array[index];
+
+            //int index = (Count - 1) / 2 + 1;
+            int index = 0;
+            //T min = array[index];
             for (int i = 0; i < Count; i++)
             {
                 if (array[i].CompareTo(oldValue) == 0)
@@ -233,16 +234,11 @@ namespace Lab2
         private void TrickleUp(int index)
         {
             //if (index != 0)
-                //var parentIndex = Parent(index);
-                if (array[index].CompareTo(array[Parent(index)]) > 0)
-                {
-                    Swap(index, Parent(index));
-                    TrickleUp( Parent(index));
-
-                }
-            else
+            //var parentIndex = Parent(index);
+            if (array[index].CompareTo(array[Parent(index)]) > 0)
             {
-                return;
+                Swap(index, Parent(index));
+                TrickleUp( Parent(index));
             }
         }
 
@@ -279,7 +275,7 @@ namespace Lab2
         /// </summary>
         private static int Parent(int position)
         {
-            return ((position - 1) / 2);
+            return (position - 1) / 2;
 
         }
 
