@@ -77,6 +77,7 @@ namespace Lab2
                 return ExtractMin();
         }
 
+        /// Finished
         /// <summary>
         /// Removes and returns the max item in the min-heap.
         /// Time complexity: O( N ).
@@ -88,19 +89,31 @@ namespace Lab2
                 throw new Exception("Empty Heap");
             }
 
-            T max = array[0];
+            int maxIndex = (Count - 1) / 2 + 1;
+            T max = array[maxIndex];
+            for (int i = maxIndex + 1; i < Count; i++)
+            {
+                if (array[i].CompareTo(max) < 0)
+                {
+                    max = array[i];
+                    maxIndex = i;
+                }
+            }
+
 
             // swap root (first) and last element
-            Swap(0, Count - 1);
+            Swap(maxIndex, Count - 1);
 
             // "remove" last
             Count--;
+
+            TrickleUp(maxIndex);
 
             return max;
 
         }
 
-
+        /// Finished
         /// <summary>
         /// Removes and returns the min item in the min-heap.
         /// Time ctexity: O( log(n) ).
@@ -135,9 +148,9 @@ namespace Lab2
         {
             // linear search
 
-            foreach (var item in array)
+            for (int i = 0; i < Count; i++)
             {
-                if (item.CompareTo(value) == 0)
+                if (array[i].CompareTo(value) == 0)
                 {
                     return true;
                 }
@@ -146,7 +159,8 @@ namespace Lab2
             return false;
 
         }
-        // TODO
+
+        // Finished
         /// <summary>
         /// Updates the first element with the given value from the heap.
         /// Time complexity: O( ? )
@@ -158,21 +172,23 @@ namespace Lab2
                 throw new Exception("Empty Heap");
             }
 
-            if (Contains(oldValue))
+            if (!Contains(oldValue))
             {
+                throw new Exception("Not in Heap");
+            }
                 //int index = (Count - 1) / 2 + 1;
                 int index = 0;
                 //T min = array[index];
-                for (int i = index + 1; i < Count; i++)
+                for (int i = 0; i < Count; i++)
                 {
                     if (array[i].CompareTo(oldValue) == 0)
                     {
-                        newValue = array[i];
+                        array[i] = newValue;
                         index = i;
                     }
                 }
-
-
+            if (array[index].CompareTo(array[Parent(index)]) < 0)
+            {
 
                 //Swap(index, Count - 1);
                 //Count--;
@@ -181,12 +197,12 @@ namespace Lab2
             }
             else
             {
-                throw new Exception("N/A");
+                TrickleDown(index);
             }
 
         }
 
-        // TODO
+        /// Finished
         /// <summary>
         /// Removes the first element with the given value from the heap.
         /// Time complexity: O( ? )
@@ -198,9 +214,9 @@ namespace Lab2
                 throw new Exception("Empty Heap");
             }
 
-            int index = (Count - 1) / 2 + 1;
+            int index = 0;
             //T min = array[mIndex];
-            for (int i = index + 1; i < Count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 if (array[i].CompareTo(value) == 0)
                 {
@@ -223,20 +239,12 @@ namespace Lab2
         // Time Complexity: O( log(n) )
         private void TrickleUp(int index)
         {
-            int parentIndex;
-            if (index != 0)
+            //parentIndex = Parent(index);
+            if (array[index].CompareTo(array[Parent(index)]) < 0)
             {
-                parentIndex = Parent(index);
-                if (array[index].CompareTo(array[parentIndex]) < 0)
-                {
-                    Swap(index, parentIndex);
-                    TrickleUp(parentIndex);
+                Swap(index, Parent(index));
+                TrickleUp(Parent(index));
 
-                }
-            }
-            else
-            {
-                return;
             }
         }
 
@@ -244,48 +252,28 @@ namespace Lab2
         // Time Complexity: O( log(n) )
         private void TrickleDown(int index)
         {
-            if (index == 0)
+            if (LeftChild(index) >= Count)
             {
                 return;
             }
-
-            if (index != 0)
+            if (array[index].CompareTo(array[LeftChild(index)]) > 0 && LeftChild(index) < Count)
             {
-                int chIndex = 2 * index + 1;
-                int value = index;
-
-                while (chIndex.CompareTo(Capacity) == 0)
+                if (array[LeftChild(index)].CompareTo(array[RightChild(index)]) < 0 || RightChild(index) >= Count)
                 {
-                    int minValue = value;
-                    int minIndex = -1;
-                    int i = 0;
-                    while (i > minValue)
-                    {
-                        if (i < 2 && i + chIndex < array.Length)
-                        {
-                            if (i + chIndex.CompareTo(minValue) == 0)
-                            {
-                                minValue = i + chIndex;
-                                minIndex = i + chIndex;
-                            }
-                            i++;
-                        }
-                    }
-
-                    if (minValue == value)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        Swap(index, minIndex);
-                        index = minIndex;
-                        chIndex = 2 * index + 1;
-                    }
+                    Swap(index, LeftChild(index));
+                    TrickleDown(LeftChild(index));
                 }
-
+            }
+            if (array[index].CompareTo(array[RightChild(index)]) > 0 && RightChild(index) < Count)
+            {
+                if (array[RightChild(index)].CompareTo(array[LeftChild(index)]) < 0)
+                {
+                    Swap(index, RightChild(index));
+                    TrickleDown(RightChild(index));
+                }
             }
         }
+
 
         //Finished
         /// <summary>
@@ -293,9 +281,8 @@ namespace Lab2
         /// </summary>
         private static int Parent(int position)
         {
-            int parentPos = (position -1) / 2;
+            return ((position -1) / 2);
 
-            return parentPos;
         }
 
         //Finished
@@ -304,8 +291,7 @@ namespace Lab2
         /// </summary>
         private static int LeftChild(int position)
         {
-            int left = 2 * position + 1;
-            return left;
+            return (2 * position + 1);
         }
 
         //Finished
@@ -314,8 +300,7 @@ namespace Lab2
         /// </summary>
         private static int RightChild(int position)
         {
-            int right = 2 * position + 2 ;
-            return right;
+            return (2 * position + 2);
         }
 
         private void Swap(int index1, int index2)

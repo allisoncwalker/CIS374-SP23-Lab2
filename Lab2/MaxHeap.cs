@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Cryptography;
+using System.Reflection;
+
 
 namespace Lab2
 {
@@ -72,7 +72,7 @@ namespace Lab2
             return ExtractMax();
         }
 
-        // TODO
+        // Finished
         /// <summary>
         /// Removes and returns the max item in the max-heap.
         /// Time complexity: O(?).
@@ -98,7 +98,7 @@ namespace Lab2
             return max;
         }
 
-
+        /// Finished
         /// <summary>
         /// Removes and returns the min item in the max-heap.
         /// Time complexity: O(?).
@@ -138,10 +138,10 @@ namespace Lab2
         public bool Contains(T value)
         {
             // linear search
-
-            foreach (var item in array)
+            for(int i = 0; i< Count; i++)
+            //foreach (var item in array)
             {
-                if (item.CompareTo(value) == 0)
+                if (array[i].CompareTo(value) == 0)
                 {
                     return true;
                 }
@@ -150,7 +150,7 @@ namespace Lab2
             return false;
 
         }
-        // TODO
+        /// Finished
         /// <summary>
         /// Updates the first element with the given value from the heap.
         /// Time complexity: O( ? )
@@ -162,35 +162,39 @@ namespace Lab2
                 throw new Exception("Empty Heap");
             }
 
-            if (Contains(oldValue))
+            if (!Contains(oldValue))
             {
+                throw new Exception("Not in Heap");
+            }
                 //int index = (Count - 1) / 2 + 1;
                 int index = 0;
                 //T min = array[index];
-                for (int i = index + 1; i < Count; i++)
+            for (int i = 0; i < Count; i++)
+            {
+                if (array[i].CompareTo(oldValue) == 0)
                 {
-                    if (array[i].CompareTo(oldValue) == 0)
-                    {
-                        newValue = array[i];
-                        index = i;
-                    }
+                    array[i] = newValue;
+                    index = i;
                 }
-
-
+            }
 
                 //Swap(index, Count - 1);
                 //Count--;
-                TrickleUp(index);
+                //TrickleUp(index);
                 //return min;
+            
+            if(array[index].CompareTo(array[Parent(index)]) < 0)
+            {
+                TrickleUp(index);
             }
             else
             {
-                throw new Exception("N/A");
+                TrickleDown(index);
             }
 
         }
 
-        // TODO
+        /// Finished
         /// <summary>
         /// Removes the first element with the given value from the heap.
         /// Time complexity: O( ? )
@@ -202,9 +206,9 @@ namespace Lab2
                 throw new Exception("Empty Heap");
             }
 
-            int index = (Count - 1) / 2 + 1;
+            int index = 0;
             //T min = array[mIndex];
-            for (int i = index + 1; i < Count; i++)
+            for (int i = 0; i < Count; i++)
             {
                 if (array[i].CompareTo(value) == 0)
                 {
@@ -228,16 +232,14 @@ namespace Lab2
         // Finished
         private void TrickleUp(int index)
         {
-            if (index != 0)
-            {
-                var parentIndex = Parent(index);
-                if (array[index].CompareTo(array[parentIndex]) > 0)
+            //if (index != 0)
+                //var parentIndex = Parent(index);
+                if (array[index].CompareTo(array[Parent(index)]) > 0)
                 {
-                    Swap(index, parentIndex);
-                    TrickleUp(parentIndex);
+                    Swap(index, Parent(index));
+                    TrickleUp( Parent(index));
 
                 }
-            }
             else
             {
                 return;
@@ -247,48 +249,28 @@ namespace Lab2
         // Finished
         private void TrickleDown(int index)
         {
-            if (index == 0)
+            if (LeftChild(index) >= Count)
             {
                 return;
             }
 
-            if (index != 0)
+            if (array[index].CompareTo(array[LeftChild(index)]) < 0 && LeftChild(index) < Count)
             {
-                int chIndex = 2 * index + 1;
-                int value = index;
-
-                while (chIndex.CompareTo(Capacity) == 0)
+                if (array[LeftChild(index)].CompareTo(array[RightChild(index)]) > 0 || RightChild(index) >= Count)
                 {
-                    int maxValue = value;
-                    int maxIndex = -1;
-                    int i = 0;
-                    while ( i < maxValue)
-                    {
-                        if (i < 2 && i + chIndex < array.Length)
-                        {
-                            if (i + chIndex.CompareTo(maxValue) == 0)
-                            {
-                                maxValue = i + chIndex;
-                                maxIndex = i + chIndex;
-                            }
-                            i++;
-                        }
-                    }
+                    Swap(index, LeftChild(index));
+                    TrickleDown(LeftChild(index));
 
-                    if (maxValue == value)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        Swap(index, maxIndex);
-                        index = maxIndex;
-                        chIndex = 2 * index + 1;
-                    }
                 }
-                   
             }
-
+            if (array[index].CompareTo(array[RightChild(index)]) < 0 && RightChild(index) < Count)
+            {
+                if (array[RightChild(index)].CompareTo(array[LeftChild(index)]) > 0)
+                {
+                    Swap(index, RightChild(index));
+                    TrickleDown(RightChild(index));
+                }
+            }
         }
 
         //Finished
@@ -297,9 +279,8 @@ namespace Lab2
         /// </summary>
         private static int Parent(int position)
         {
-            int parentPos = (position - 1) / 2;
+            return ((position - 1) / 2);
 
-            return parentPos;
         }
 
         //Finished
@@ -308,9 +289,8 @@ namespace Lab2
         /// </summary>
         private static int LeftChild(int position)
         {
-            int left = 2 * position + 2;
+            return (2 * position + 2);
 
-            return left;
         }
 
         //Finished
@@ -319,9 +299,8 @@ namespace Lab2
         /// </summary>
         private static int RightChild(int position)
         {
-            int right = 2 * position + 2;
+            return (2 * position + 2);
 
-            return right;
         }
 
         private void Swap(int index1, int index2)
